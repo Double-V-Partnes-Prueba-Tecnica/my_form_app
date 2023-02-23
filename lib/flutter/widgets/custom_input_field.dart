@@ -50,15 +50,15 @@ class CustomInputField extends StatelessWidget {
             'Contraseña no válida.\nDebe tener al menos 6 caracteres.\nUna mayúscula una minúscula y un número.'
       },
       {
-        'type': 'pin',
-        'regex': RegExp(r'^[0-9]{4}$'),
-        'message': 'PIN no válido, debe tener 4 dígitos',
-      },
-      {
         'type': 'number',
         'regex': RegExp(r'^[0-9]{8,}$'),
         'message': 'Número no válido',
       },
+      {
+        'type': 'username',
+        'regex': RegExp(r'^[a-zA-Z0-9]{6,}$'),
+        'message': 'Usuario no válido, debe tener al menos 6 caracteres',
+      }
     ];
 
     return TextFormField(
@@ -78,7 +78,7 @@ class CustomInputField extends StatelessWidget {
         if (maxCharacters != null && value.length > maxCharacters!) {
           return 'Este campo no puede tener mas de $maxCharacters caracteres';
         }
-        if (validator != null) {
+        if (validador != null) {
           for (var i = 0; i < validador.length; i++) {
             if (validador[i]['type'] == validator) {
               if (!validador[i]['regex'].hasMatch(value)) {

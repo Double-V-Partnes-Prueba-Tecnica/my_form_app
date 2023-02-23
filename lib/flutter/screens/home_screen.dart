@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_form_app/flutter/bloc/global/global_bloc.dart';
+import 'package:my_form_app/flutter/widgets/custom_input_field.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -12,7 +13,6 @@ class HomeScreen extends StatelessWidget {
       'username': '',
       'password': '',
     };
-
     return BlocBuilder<GlobalBloc, GlobalState>(
       builder: (context, state) {
         return Scaffold(
@@ -28,7 +28,34 @@ class HomeScreen extends StatelessWidget {
               child: Form(
                 key: myFormKey,
                 child: Column(
-                  children: <Widget>[],
+                  children: <Widget>[
+                    CustomInputField(
+                      labelText: 'Usuario',
+                      hintText: 'Ingrese su usuario',
+                      formProperty: 'username',
+                      formValues: formValues,
+                      validator: 'username',
+                    ),
+                    const SizedBox(height: 20),
+                    CustomInputField(
+                      labelText: 'Contraseña',
+                      hintText: 'Ingrese su contraseña',
+                      formProperty: 'password',
+                      formValues: formValues,
+                      validator: 'password',
+                      isPassword: true,
+                    ),
+                    const SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: () {
+                        if (myFormKey.currentState!.validate()) {
+                          myFormKey.currentState!.save();
+                          debugPrint(formValues.toString());
+                        }
+                      },
+                      child: const Text('Enviar'),
+                    ),
+                  ],
                 ),
               ),
             ),
