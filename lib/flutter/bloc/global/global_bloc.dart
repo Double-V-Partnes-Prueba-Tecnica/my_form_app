@@ -14,7 +14,8 @@ class GlobalBloc extends Bloc<GlobalEvent, GlobalState> {
     });
   }
   _testBloc() async {
-    debugPrint(await AppStorage.getProperty('test'));
-    await AppStorage.setProperty('test', 'Ivan Rene Perez');
+    await AppStorage.setProperty('test', 'test');
+    debugPrint('test ${await AppStorage.getProperty('test')}');
+    await AppStorage.deleteProperty('test');
   }
 }

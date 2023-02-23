@@ -6,7 +6,18 @@ import 'package:my_form_app/flutter/screens/screens.dart';
 class AppRoutes {
   static const initialRoute = '/';
 
-  static const menuOptions = <MenuOption>[];
+  static const menuOptions = <MenuOption>[
+    MenuOption(
+      title: 'Login',
+      route: '/login',
+      screen: LoginScreen(),
+    ),
+    MenuOption(
+      title: 'Singup',
+      route: '/singup',
+      screen: SingupScreen(),
+    ),
+  ];
 
   static Map<String, Widget Function(BuildContext)> getAppRoutes() {
     const home = MenuOption(
