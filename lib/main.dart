@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_form_app/services/router/app_routes.dart';
+import 'package:my_form_app/services/theme/app_theme.dart';
 import 'flutter/bloc/global/global_bloc.dart';
 
 void main() {
@@ -31,9 +32,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'My Form App',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      theme: AppTheme.lightTheme,
       routes: AppRoutes.getAppRoutes(),
       debugShowCheckedModeBanner: false,
     );
