@@ -8,7 +8,7 @@ class ApiResponse {
   ApiResponse({required this.status, required this.data});
 }
 
-class ApiService {
+class AppApi {
   // Get, puede recibir o no un filtro, o una variable booleana para indicar si se quiere un count
   static Future<ApiResponse> getHttp(String endpoint,
       {String? filter, bool? count}) async {
