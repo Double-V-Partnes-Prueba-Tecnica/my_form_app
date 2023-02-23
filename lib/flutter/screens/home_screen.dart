@@ -19,41 +19,53 @@ class HomeScreen extends StatelessWidget {
           appBar: AppBar(
             title: const Text('Login and Register'),
           ),
-          body: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                vertical: 30,
-                horizontal: 20,
-              ),
-              child: Form(
-                key: myFormKey,
+          body: Center(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  vertical: 30,
+                  horizontal: 20,
+                ),
                 child: Column(
-                  children: <Widget>[
-                    CustomInputField(
-                      labelText: 'Usuario',
-                      hintText: 'Ingrese su usuario',
-                      formProperty: 'username',
-                      formValues: formValues,
-                      validator: 'username',
+                  children: [
+                    Form(
+                      key: myFormKey,
+                      child: Column(
+                        children: <Widget>[
+                          CustomInputField(
+                            labelText: 'Usuario',
+                            hintText: 'Ingrese su usuario',
+                            formProperty: 'username',
+                            formValues: formValues,
+                            validator: 'username',
+                          ),
+                          const SizedBox(height: 20),
+                          CustomInputField(
+                            labelText: 'Contraseña',
+                            hintText: 'Ingrese su contraseña',
+                            formProperty: 'password',
+                            formValues: formValues,
+                            validator: 'password',
+                            isPassword: true,
+                          ),
+                          const SizedBox(height: 20),
+                          ElevatedButton(
+                            onPressed: () {
+                              if (myFormKey.currentState!.validate()) {
+                                myFormKey.currentState!.save();
+                                debugPrint(formValues.toString());
+                              }
+                            },
+                            child: const Text('Enviar'),
+                          ),
+                        ],
+                      ),
                     ),
-                    const SizedBox(height: 20),
-                    CustomInputField(
-                      labelText: 'Contraseña',
-                      hintText: 'Ingrese su contraseña',
-                      formProperty: 'password',
-                      formValues: formValues,
-                      validator: 'password',
-                      isPassword: true,
-                    ),
-                    const SizedBox(height: 20),
                     ElevatedButton(
                       onPressed: () {
-                        if (myFormKey.currentState!.validate()) {
-                          myFormKey.currentState!.save();
-                          debugPrint(formValues.toString());
-                        }
+                        Navigator.pushNamed(context, 'register');
                       },
-                      child: const Text('Enviar'),
+                      child: const Text('Ir a registro'),
                     ),
                   ],
                 ),

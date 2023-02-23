@@ -35,6 +35,7 @@ class MyApp extends StatelessWidget {
       title: 'My Form App',
       theme: AppTheme.lightTheme,
       routes: AppRoutes.getAppRoutes(),
+      onGenerateRoute: AppRoutes.onGenerateRoute,
       debugShowCheckedModeBanner: false,
     );
   }

@@ -26,6 +26,11 @@ class AppRoutes {
   }
 
   static Route onGenerateRoute(RouteSettings settings) {
+    // Borrar todo el stack de rutas y volver a la ruta inicial
+    MaterialPageRoute(
+      builder: (context) => const HomeScreen(),
+      settings: const RouteSettings(name: '/'),
+    );
     return MaterialPageRoute(
       builder: (context) => const HomeScreen(),
     );
