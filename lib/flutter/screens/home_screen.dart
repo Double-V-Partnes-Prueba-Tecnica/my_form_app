@@ -16,7 +16,7 @@ class HomeScreen extends StatelessWidget {
       builder: (context, state) {
         return Scaffold(
           appBar: AppBar(
-            title: const Text('Home'),
+            title: const Text('Bienvenido'),
           ),
           body: Center(
             child: SingleChildScrollView(
@@ -54,7 +54,9 @@ class HomeScreen extends StatelessWidget {
                       onPressed: () {
                         debugPrint('Cerrando sesión');
                         Navigator.of(context).pushNamedAndRemoveUntil(
-                            '/login', (Route<dynamic> route) => false);
+                          '/login',
+                          (Route<dynamic> route) => false,
+                        );
                       },
                       child: const Text('Cerrar sesión'),
                     ),

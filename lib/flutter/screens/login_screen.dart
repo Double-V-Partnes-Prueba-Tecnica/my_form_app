@@ -17,7 +17,7 @@ class LoginScreen extends StatelessWidget {
       builder: (context, state) {
         return Scaffold(
           appBar: AppBar(
-            title: const Text('Login and Register'),
+            title: const Text('Iniciar sesión'),
           ),
           body: Center(
             child: SingleChildScrollView(

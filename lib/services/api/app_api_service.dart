@@ -8,26 +8,20 @@ class ApiResponse {
   ApiResponse({required this.status, required this.data});
 }
 
-class AppApi {
-  // Get, puede recibir o no un filtro, o una variable booleana para indicar si se quiere un count
+class AppApiService {
   static Future<ApiResponse> getHttp(String endpoint,
       {String? filter, bool? count}) async {
-    // url
     String url = AppEnviroment().getApiURL + endpoint;
-    // si se envía un filtro
     if (filter != null) {
       url += '?filter=$filter';
     }
-    // si se envía un count agregar a la url /count
     if (count != null && count) {
       url += '/count';
     }
     try {
-      // http get
       final response = await http.get(Uri.parse(url));
       return ApiResponse(status: response.statusCode, data: response.body);
     } catch (e) {
-      // si hay un error, devolver el error
       return ApiResponse(status: 500, data: e.toString());
     }
   }
