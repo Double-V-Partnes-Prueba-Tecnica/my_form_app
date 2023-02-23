@@ -6,7 +6,7 @@ import 'package:my_form_app/services/theme/app_theme.dart';
 import 'flutter/bloc/global/global_bloc.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const AppState());
 }
 
 class AppState extends StatelessWidget {
@@ -17,7 +17,7 @@ class AppState extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider<GlobalBloc>(
-          create: (context) => GlobalBloc(),
+          create: (_) => GlobalBloc(),
         ),
       ],
       child: const MyApp(),
@@ -30,6 +30,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    BlocProvider.of<GlobalBloc>(context).add(TestBloc());
     return MaterialApp(
       title: 'My Form App',
       theme: AppTheme.lightTheme,
