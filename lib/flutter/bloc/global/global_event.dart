@@ -46,6 +46,37 @@ class AuthTokenUser extends GlobalEvent {
   );
 }
 
+class GetFullUser extends GlobalEvent {
+  final String? id;
+  final String? token;
+  GetFullUser({
+    required this.id,
+    required this.token,
+  });
+}
+
+class GetAddresses extends GlobalEvent {
+  final String? name;
+  final String? userId;
+  final String? token;
+  GetAddresses({
+    required this.name,
+    required this.userId,
+    required this.token,
+  });
+}
+
+class DeleteAddress extends GlobalEvent {
+  final String? addressId;
+  final String? userId;
+  final String? token;
+  DeleteAddress({
+    required this.addressId,
+    required this.userId,
+    required this.token,
+  });
+}
+
 // SETTERS
 class SetIsLoggedIn extends GlobalEvent {
   final bool isLoggedIn;

@@ -14,6 +14,7 @@ class HomeScreen extends StatelessWidget {
       'address': '',
     };
     final GlobalBloc globalBloc = BlocProvider.of<GlobalBloc>(context);
+
     return BlocBuilder<GlobalBloc, GlobalState>(
       builder: (context, state) {
         return Scaffold(
@@ -21,52 +22,127 @@ class HomeScreen extends StatelessWidget {
             title: Text(
               'Bienvenido ${globalBloc.state.user != null ? ', ${globalBloc.state.user['name']}' : ''}',
             ),
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.logout),
+                onPressed: () {
+                  globalBloc.add(SignOut());
+                  debugPrint('Salir');
+                  Navigator.pushReplacementNamed(context, '/login');
+                },
+              ),
+            ],
           ),
           body: Center(
             child: globalBloc.state.isLoading
                 ? const CircularProgressIndicator()
-                : SingleChildScrollView(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 30,
-                        horizontal: 20,
+                : Column(
+                    children: [
+                      const SizedBox(
+                        height: 20,
                       ),
-                      child: Column(
-                        children: [
-                          Form(
-                            key: myFormKey,
-                            child: Column(
-                              children: <Widget>[
-                                CustomInputField(
-                                  labelText: 'Nueva Dirección',
-                                  hintText: 'Ingrese su nueva dirección',
-                                  formProperty: 'username',
-                                  formValues: formValues,
-                                ),
-                                const SizedBox(height: 20),
-                                ElevatedButton(
-                                  onPressed: () {
-                                    if (myFormKey.currentState!.validate()) {
-                                      myFormKey.currentState!.save();
-                                      debugPrint(formValues.toString());
-                                    }
-                                  },
-                                  child: const Text('Guardar'),
-                                ),
-                              ],
+                      Form(
+                        key: myFormKey,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: <Widget>[
+                            SizedBox(
+                              width: MediaQuery.of(context).size.width * 0.7,
+                              child: CustomInputField(
+                                labelText: 'Nueva Dirección',
+                                hintText: 'Ingrese su nueva dirección',
+                                formProperty: 'address',
+                                formValues: formValues,
+                                validator: 'address',
+                              ),
                             ),
-                          ),
-                          ElevatedButton(
-                            onPressed: () {
-                              globalBloc.add(SignOut());
-                              debugPrint('Cerrando sesión');
-                              Navigator.pushReplacementNamed(context, '/login');
-                            },
-                            child: const Text('Cerrar sesión'),
-                          ),
-                        ],
+                            ElevatedButton(
+                              onPressed: () async {
+                                if (myFormKey.currentState!.validate()) {
+                                  myFormKey.currentState!.save();
+                                  debugPrint(formValues.toString());
+
+                                  debugPrint(
+                                    'user: ${globalBloc.state.user}',
+                                  );
+
+                                  String? token = await AppStorage.getProperty(
+                                    'token',
+                                  );
+
+                                  // Agregar dirección a la lista de direcciones del usuario
+                                  globalBloc.add(
+                                    GetAddresses(
+                                      name: formValues['address'],
+                                      userId: globalBloc.state.user != null
+                                          ? globalBloc.state.user['id']
+                                          : '',
+                                      token: token ?? '',
+                                    ),
+                                  );
+                                  // Limpia el formulario
+                                  myFormKey.currentState!.reset();
+                                }
+                              },
+                              child: const Text('Guardar'),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.75,
+                        child: ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: globalBloc.state.user != null
+                              ? globalBloc.state.user['addresses'].length
+                              : 0,
+                          itemBuilder: (context, index) {
+                            return Card(
+                              child: ListTile(
+                                title: Text(
+                                  globalBloc.state.user['addresses'][index]
+                                      ['name'],
+                                ),
+                                // Boton de delete rojo con icono de basura, el icono es blanco, y el fondo es rojo
+                                trailing: IconButton(
+                                  icon: const Icon(
+                                    Icons.delete,
+                                    color: Colors.red,
+                                  ),
+                                  onPressed: () async {
+                                    debugPrint(
+                                      'Eliminar ${globalBloc.state.user['addresses'][index]['name']}',
+                                    );
+
+                                    String? token =
+                                        await AppStorage.getProperty(
+                                      'token',
+                                    );
+
+                                    // Eliminar dirección de la lista de direcciones del usuario
+                                    globalBloc.add(
+                                      DeleteAddress(
+                                        addressId: globalBloc.state.user != null
+                                            ? globalBloc.state.user['addresses']
+                                                [index]['id']
+                                            : '',
+                                        token: token ?? '',
+                                        userId: globalBloc.state.user != null
+                                            ? globalBloc.state.user['id']
+                                            : '',
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ],
                   ),
           ),
         );

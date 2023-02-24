@@ -64,7 +64,12 @@ class CustomInputField extends StatelessWidget {
       'username': {
         'regex': RegExp(r'^[a-zA-Z0-9._-]{6,}$'),
         'message': 'Usuario no válido, debe tener al menos 6 caracteres',
-      }
+      },
+      'address': {
+        // Caracteres validos: letras, numeros y espacios # - . ,
+        'regex': RegExp(r'^[a-zA-Z0-9 #.,-]{6,}$'),
+        'message': 'Dirección no válida, debe tener al menos 6 caracteres',
+      },
     };
     if (initialValue != null && initialValue!.isNotEmpty) {
       formValues[formProperty] = initialValue!;

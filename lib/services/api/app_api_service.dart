@@ -23,7 +23,6 @@ class AppApiService {
     if (count != null && count) {
       url += '/count';
     }
-
     if (filter != null) {
       // encode filter for url
       filter = jsonEncode(filter);
@@ -31,11 +30,26 @@ class AppApiService {
     }
     try {
       if (token != null) {
-        final headers = {'Authorization': 'Bearer $token'};
-        final response = await http.get(Uri.parse(url), headers: headers);
-        return ApiResponse(status: response.statusCode, data: response.body);
+        final response = await http.get(
+          Uri.parse(url),
+          headers: {
+            'Content-Type': 'application/json; charset=UTF-8',
+            'accept': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+        );
+        return ApiResponse(
+          status: response.statusCode,
+          data: response.body,
+        );
       } else {
-        final response = await http.get(Uri.parse(url));
+        final response = await http.get(
+          Uri.parse(url),
+          headers: {
+            'Content-Type': 'application/json; charset=UTF-8',
+            'accept': 'application/json',
+          },
+        );
         return ApiResponse(status: response.statusCode, data: response.body);
       }
     } catch (e) {
@@ -47,15 +61,52 @@ class AppApiService {
       {String? token}) async {
     String url = AppEnviroment().getApiURL + endpoint;
     try {
-      final response = await http.post(
-        Uri.parse(url),
-        headers: <String, String>{
+      if (token != null) {
+        final response = await http.post(
+          Uri.parse(url),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+            'accept': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+          body: body,
+        );
+        return ApiResponse(status: response.statusCode, data: response.body);
+      } else {
+        final response = await http.post(
+          Uri.parse(url),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+            'accept': 'application/json',
+          },
+          body: body,
+        );
+        return ApiResponse(status: response.statusCode, data: response.body);
+      }
+    } catch (e) {
+      return ApiResponse(status: 500, data: e.toString());
+    }
+  }
+
+  static deleteHttp(String table, String id, {String? token}) async {
+    String url = AppEnviroment().getApiURL + table + '/' + id;
+    try {
+      if (token != null) {
+        final response =
+            await http.delete(Uri.parse(url), headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           'accept': 'application/json',
-        },
-        body: body,
-      );
-      return ApiResponse(status: response.statusCode, data: response.body);
+          'Authorization': 'Bearer $token',
+        });
+        return ApiResponse(status: response.statusCode, data: response.body);
+      } else {
+        final response =
+            await http.delete(Uri.parse(url), headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'accept': 'application/json',
+        });
+        return ApiResponse(status: response.statusCode, data: response.body);
+      }
     } catch (e) {
       return ApiResponse(status: 500, data: e.toString());
     }
