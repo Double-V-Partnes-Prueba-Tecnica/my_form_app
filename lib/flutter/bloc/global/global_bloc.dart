@@ -57,8 +57,8 @@ class GlobalBloc extends Bloc<GlobalEvent, GlobalState> {
         add(SetUser(data));
         debugPrint('user: ${state.user}');
       } else {
-        // No se pudo registrar el usuario
-        add(SetUser(null));
+        // No se pudo registrar el usuario, emitir para que se muestre el error en la UI
+        emit(state.copyWith(user: null));
       }
       add(SetIsLoading(false));
     });

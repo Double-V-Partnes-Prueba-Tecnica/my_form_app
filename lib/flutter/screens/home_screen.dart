@@ -97,7 +97,9 @@ class HomeScreen extends StatelessWidget {
                         child: ListView.builder(
                           shrinkWrap: true,
                           itemCount: globalBloc.state.user != null
-                              ? globalBloc.state.user['addresses'].length
+                              ? globalBloc.state.user['addresses'] != null
+                                  ? globalBloc.state.user['addresses'].length
+                                  : 0
                               : 0,
                           itemBuilder: (context, index) {
                             return Card(
