@@ -39,8 +39,9 @@ class LoginScreen extends StatelessWidget {
                             formProperty: 'username',
                             formValues: formValues,
                             validator: 'username',
-                            initialValue:
-                                globalBloc.state.user['username'] ?? '',
+                            initialValue: globalBloc.state.user != null
+                                ? globalBloc.state.user['username'] ?? ''
+                                : '',
                           ),
                           const SizedBox(height: 20),
                           CustomInputField(
@@ -50,8 +51,9 @@ class LoginScreen extends StatelessWidget {
                             formValues: formValues,
                             validator: 'password',
                             isPassword: true,
-                            initialValue:
-                                globalBloc.state.user['password'] ?? '',
+                            initialValue: globalBloc.state.user != null
+                                ? globalBloc.state.user['password'] ?? ''
+                                : '',
                           ),
                           const SizedBox(height: 20),
                           ElevatedButton(
@@ -59,9 +61,38 @@ class LoginScreen extends StatelessWidget {
                               if (myFormKey.currentState!.validate()) {
                                 myFormKey.currentState!.save();
                                 debugPrint(formValues.toString());
+                                globalBloc.add(SetIsLoading(true));
+                                globalBloc.add(
+                                  LoginUser(
+                                    context: context,
+                                    username: formValues['username']!,
+                                    password: formValues['password']!,
+                                  ),
+                                );
+                                Future<void>.delayed(
+                                  const Duration(seconds: 2),
+                                  () {
+                                    // validar si inicio sesion y el usuario existe
+                                    if (globalBloc.state.isLoggedIn) {
+                                      Navigator.pushReplacementNamed(
+                                        context,
+                                        '/home',
+                                      );
+                                    } else {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        const SnackBar(
+                                          content: Text(
+                                              'Usuario o contraseña incorrectos'),
+                                        ),
+                                      );
+                                    }
+                                    globalBloc.add(SetIsLoading(false));
+                                  },
+                                );
                               }
                             },
-                            child: const Text('Enviar'),
+                            child: const Text('Iniciar sesión'),
                           ),
                         ],
                       ),

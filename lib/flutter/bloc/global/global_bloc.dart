@@ -16,15 +16,11 @@ class GlobalBloc extends Bloc<GlobalEvent, GlobalState> {
       _testBloc();
     });
 
-    on<AuthBloc>((event, emit) {
-      debugPrint('AuthBloc ${DateTime.now()}');
-      _authBloc();
-    });
-
     on<SignOut>((event, emit) {
       debugPrint('SignOut ${DateTime.now()}');
       AppStorage.deleteProperty('token');
       emit(state.copyWith(isLoggedIn: false));
+      add(SetIsLoading(false));
     });
 
     on<RegisterUser>((event, emit) async {
@@ -79,7 +75,7 @@ class GlobalBloc extends Bloc<GlobalEvent, GlobalState> {
       try {
         debugPrint('logging user');
         final ApiResponse response = await AppApiService.postHttp(
-          'login',
+          'users/login',
           body,
         );
         debugPrint('response body: ${response.data}');
@@ -93,14 +89,53 @@ class GlobalBloc extends Bloc<GlobalEvent, GlobalState> {
       if (data['token'] != null) {
         debugPrint('ENCONTRADO TOKEN');
         // Setea token en el storage
-        await AppStorage.setProperty('token', data['token']);
         // Setea usuario en el state
-        add(SetUser(data['user']));
         add(SetIsLoggedIn(true));
+        add(AuthTokenUser(data['token']));
         debugPrint('user: ${state.user}');
+        await AppStorage.setProperty('token', data['token']);
       } else {
         // No se pudo loguear el usuario
-        add(SetUser(null));
+        // add(SetUser(null));
+        add(SetIsLoggedIn(false));
+        await AppStorage.deleteProperty('token');
+      }
+      add(SetIsLoading(false));
+    });
+
+    on<AuthTokenUser>((event, emit) async {
+      debugPrint('AuthTokenUser: ${event.token}');
+      // Pedir el usuario users/me con bearer token peticion get
+      // Si existe el usuario
+      // Setea usuario en el state
+      dynamic data;
+      try {
+        debugPrint('logging user');
+        final ApiResponse response = await AppApiService.getHttp(
+          'users/me',
+          token: event.token,
+        );
+        debugPrint('response body: ${response.data}');
+        data = jsonDecode(response.data);
+      } catch (e) {
+        debugPrint('error: $e');
+      }
+
+      debugPrint('data: $data');
+      // si existe el token
+      if (data['id'] != null) {
+        debugPrint('ENCONTRADO ID');
+        // Setea token en el storage
+        // Setea usuario en el state
+        add(SetIsLoggedIn(true));
+        add(SetUser(data));
+        debugPrint('user: ${state.user}');
+        await AppStorage.setProperty('token', event.token);
+      } else {
+        // No se pudo loguear el usuario
+        // add(SetUser(null));
+        add(SetIsLoggedIn(false));
+        await AppStorage.deleteProperty('token');
       }
       add(SetIsLoading(false));
     });
@@ -124,15 +159,5 @@ class GlobalBloc extends Bloc<GlobalEvent, GlobalState> {
   _testBloc() async {
     final ApiResponse response = await AppApiService.getHttp('ping');
     debugPrint('response body: ${response.data}');
-  }
-
-  _authBloc() async {
-    final String? token = await AppStorage.getProperty('token');
-    debugPrint('token: $token');
-    if (token != null) {
-      add(SetIsLoggedIn(true));
-    } else {
-      add(SetIsLoggedIn(false));
-    }
   }
 }

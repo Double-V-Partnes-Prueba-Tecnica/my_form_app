@@ -18,52 +18,56 @@ class HomeScreen extends StatelessWidget {
       builder: (context, state) {
         return Scaffold(
           appBar: AppBar(
-            title: const Text('Bienvenido'),
+            title: Text(
+              'Bienvenido ${globalBloc.state.user != null ? ', ${globalBloc.state.user['name']}' : ''}',
+            ),
           ),
           body: Center(
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 30,
-                  horizontal: 20,
-                ),
-                child: Column(
-                  children: [
-                    Form(
-                      key: myFormKey,
+            child: globalBloc.state.isLoading
+                ? const CircularProgressIndicator()
+                : SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 30,
+                        horizontal: 20,
+                      ),
                       child: Column(
-                        children: <Widget>[
-                          CustomInputField(
-                            labelText: 'Nueva Dirección',
-                            hintText: 'Ingrese su nueva dirección',
-                            formProperty: 'username',
-                            formValues: formValues,
+                        children: [
+                          Form(
+                            key: myFormKey,
+                            child: Column(
+                              children: <Widget>[
+                                CustomInputField(
+                                  labelText: 'Nueva Dirección',
+                                  hintText: 'Ingrese su nueva dirección',
+                                  formProperty: 'username',
+                                  formValues: formValues,
+                                ),
+                                const SizedBox(height: 20),
+                                ElevatedButton(
+                                  onPressed: () {
+                                    if (myFormKey.currentState!.validate()) {
+                                      myFormKey.currentState!.save();
+                                      debugPrint(formValues.toString());
+                                    }
+                                  },
+                                  child: const Text('Guardar'),
+                                ),
+                              ],
+                            ),
                           ),
-                          const SizedBox(height: 20),
                           ElevatedButton(
                             onPressed: () {
-                              if (myFormKey.currentState!.validate()) {
-                                myFormKey.currentState!.save();
-                                debugPrint(formValues.toString());
-                              }
+                              globalBloc.add(SignOut());
+                              debugPrint('Cerrando sesión');
+                              Navigator.pushReplacementNamed(context, '/login');
                             },
-                            child: const Text('Guardar'),
+                            child: const Text('Cerrar sesión'),
                           ),
                         ],
                       ),
                     ),
-                    ElevatedButton(
-                      onPressed: () {
-                        globalBloc.add(SignOut());
-                        debugPrint('Cerrando sesión');
-                        Navigator.pushReplacementNamed(context, '/login');
-                      },
-                      child: const Text('Cerrar sesión'),
-                    ),
-                  ],
-                ),
-              ),
-            ),
+                  ),
           ),
         );
       },

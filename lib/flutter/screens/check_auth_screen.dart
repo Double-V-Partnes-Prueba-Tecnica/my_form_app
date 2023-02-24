@@ -13,12 +13,15 @@ class CheckAuthScreen extends StatelessWidget {
       body: FutureBuilder(
         future: AppStorage.getProperty('token'),
         builder: (context, snapshot) {
+          final GlobalBloc globalBloc = BlocProvider.of<GlobalBloc>(context);
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
               child: CircularProgressIndicator(),
             );
           } else {
             if (snapshot.hasData) {
+              globalBloc.add(SetIsLoading(true));
+              globalBloc.add(AuthTokenUser(snapshot.data ?? ''));
               Future.microtask(() {
                 Navigator.pushReplacement(
                   context,
@@ -34,6 +37,8 @@ class CheckAuthScreen extends StatelessWidget {
               );
             } else {
               Future.microtask(() {
+                globalBloc.add(SetIsLoading(true));
+                globalBloc.add(SignOut());
                 Navigator.pushReplacement(
                   context,
                   PageRouteBuilder(

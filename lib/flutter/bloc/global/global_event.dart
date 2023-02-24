@@ -7,11 +7,6 @@ class TestBloc extends GlobalEvent {
   TestBloc();
 }
 
-class AuthBloc extends GlobalEvent {
-  final BuildContext context;
-  AuthBloc({required this.context});
-}
-
 class SignOut extends GlobalEvent {
   SignOut();
 }
@@ -42,6 +37,13 @@ class LoginUser extends GlobalEvent {
     required this.username,
     required this.password,
   });
+}
+
+class AuthTokenUser extends GlobalEvent {
+  final String token;
+  AuthTokenUser(
+    this.token,
+  );
 }
 
 // SETTERS

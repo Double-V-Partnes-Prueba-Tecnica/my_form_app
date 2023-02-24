@@ -12,18 +12,32 @@ class ApiResponse {
 }
 
 class AppApiService {
-  static Future<ApiResponse> getHttp(String endpoint,
-      {String? filter, bool? count}) async {
+  static Future<ApiResponse> getHttp(
+    String endpoint, {
+    dynamic? filter,
+    bool? count,
+    String? token,
+  }) async {
     String url = AppEnviroment().getApiURL + endpoint;
-    if (filter != null) {
-      url += '?filter=$filter';
-    }
+
     if (count != null && count) {
       url += '/count';
     }
+
+    if (filter != null) {
+      // encode filter for url
+      filter = jsonEncode(filter);
+      url += '?filter=$filter';
+    }
     try {
-      final response = await http.get(Uri.parse(url));
-      return ApiResponse(status: response.statusCode, data: response.body);
+      if (token != null) {
+        final headers = {'Authorization': 'Bearer $token'};
+        final response = await http.get(Uri.parse(url), headers: headers);
+        return ApiResponse(status: response.statusCode, data: response.body);
+      } else {
+        final response = await http.get(Uri.parse(url));
+        return ApiResponse(status: response.statusCode, data: response.body);
+      }
     } catch (e) {
       return ApiResponse(status: 500, data: e.toString());
     }
