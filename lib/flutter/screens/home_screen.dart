@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_form_app/flutter/bloc/global/global_bloc.dart';
 import 'package:my_form_app/flutter/widgets/custom_input_field.dart';
+import 'package:my_form_app/services/storage/app_storage.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -12,6 +13,7 @@ class HomeScreen extends StatelessWidget {
     final Map<String, String> formValues = <String, String>{
       'address': '',
     };
+    final GlobalBloc globalBloc = BlocProvider.of<GlobalBloc>(context);
     return BlocBuilder<GlobalBloc, GlobalState>(
       builder: (context, state) {
         return Scaffold(
@@ -52,11 +54,9 @@ class HomeScreen extends StatelessWidget {
                     ),
                     ElevatedButton(
                       onPressed: () {
+                        globalBloc.add(SignOut());
                         debugPrint('Cerrando sesión');
-                        Navigator.of(context).pushNamedAndRemoveUntil(
-                          '/login',
-                          (Route<dynamic> route) => false,
-                        );
+                        Navigator.pushReplacementNamed(context, '/login');
                       },
                       child: const Text('Cerrar sesión'),
                     ),

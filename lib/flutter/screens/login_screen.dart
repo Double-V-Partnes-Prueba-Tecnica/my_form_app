@@ -15,6 +15,7 @@ class LoginScreen extends StatelessWidget {
     };
     return BlocBuilder<GlobalBloc, GlobalState>(
       builder: (context, state) {
+        final GlobalBloc globalBloc = BlocProvider.of<GlobalBloc>(context);
         return Scaffold(
           appBar: AppBar(
             title: const Text('Iniciar sesión'),
@@ -38,6 +39,8 @@ class LoginScreen extends StatelessWidget {
                             formProperty: 'username',
                             formValues: formValues,
                             validator: 'username',
+                            initialValue:
+                                globalBloc.state.user['username'] ?? '',
                           ),
                           const SizedBox(height: 20),
                           CustomInputField(
@@ -47,6 +50,8 @@ class LoginScreen extends StatelessWidget {
                             formValues: formValues,
                             validator: 'password',
                             isPassword: true,
+                            initialValue:
+                                globalBloc.state.user['password'] ?? '',
                           ),
                           const SizedBox(height: 20),
                           ElevatedButton(
